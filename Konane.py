@@ -11,14 +11,6 @@ print(a.listXMoves())
 a.randomMove(a.listXMoves())
 a.print()
 
-# while True:
-#     print()
-#     if (numO == 0):
-#         print("You lose. Better luck next time.")
-#         exit()
-#     if (numX == 0):
-#         print("You win! Congratulations!")
-#         exit()
 
     
     

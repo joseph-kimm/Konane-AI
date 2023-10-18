@@ -26,7 +26,7 @@ class Board:
         self.pieces[r][c] = '.'
         self.empty.append((r, c))
 
-    # Start position at (r1, c1), end position at (r2, c2)
+    # Move a piece from start position (r1, c1) to end position at (r2, c2)
     def move(self, r1, c1, r2, c2):
         # determine if moving X or O
         player = self.pieces[r1][c1]
@@ -47,9 +47,9 @@ class Board:
             self.remove(r1, c2+1)
             self.pieces[r2-1][c2-1] = player
 
+    # Pick a random move from the provided list
     def randomMove(self, list):
-            idx = random.randint(0, len(list))
-            print(list[idx])
+            idx = random.randint(0, len(list)-1)
             self.move(list[idx][0][0], list[idx][0][1], list[idx][1][0], list[idx][1][1])
         
 
