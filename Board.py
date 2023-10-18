@@ -1,3 +1,5 @@
+import random
+
 class Board:
 
     DIR1 = [[0,1], [0,-1], [-1, 0], [1, 0]]
@@ -11,10 +13,10 @@ class Board:
     # showing the current status of the board
     def print(self):
         print('   1  2  3  4  5  6  7  8')
-        for i in range(8):
-            print(i+1, end = "  ")
-            for j in range(8):
-                print(self.pieces[i][j], end = "  ")
+        for row in range(8):
+            print(row+1, end = "  ")
+            for col in range(8):
+                print(self.pieces[row][col], end = "  ")
             print()
         
     # removing a piece from the board
@@ -24,17 +26,32 @@ class Board:
         self.pieces[r][c] = '.'
         self.empty.append((r, c))
 
-    # moving from one place to the next
-    def jump(self, row1, col1, row2, col2):
-        r1 = row1 - 1
-        c1 = col1 - 1
-        r2 = row2 - 1
-        c2 = col2 - 1
-        if (self.pieces[r2][c2] != '.'):
-            print("Please choose a valid jump")
-            return
-        if (r2 - r1 == 1): 
-            self.pieces[r1+1][c1] = '.'
+    # Start position at (r1, c1), end position at (r2, c2)
+    def move(self, r1, c1, r2, c2):
+        # determine if moving X or O
+        player = self.pieces[r1][c1]
+        
+        self.remove(r1, c1)
+
+        # Remove piece between start and end. Put player's piece at end position.
+        if (r1-r2 == -2):
+            self.remove(r1+1, c1)
+            self.pieces[r2-1][c2-1] = player
+        if (r1-r2 == 2):
+            self.remove(r2+1, c1)
+            self.pieces[r2-1][c2-1] = player
+        if (c1-c2 == -2):
+            self.remove(r1, c1+1)
+            self.pieces[r2-1][c2-1] = player
+        if (c1-c2 == 2):
+            self.remove(r1, c2+1)
+            self.pieces[r2-1][c2-1] = player
+
+    def randomMove(self, list):
+            idx = random.randint(0, len(list))
+            print(list[idx])
+            self.move(list[idx][0][0], list[idx][0][1], list[idx][1][0], list[idx][1][1])
+        
 
     # checking if row and column is valid
     @staticmethod
@@ -88,6 +105,4 @@ class Board:
                     if (self.pieces[row1][col1] == 'O') and (self.pieces[row2][col2] == 'X'):
                         XMoves.append([(row2+1, col2+1), (r+1, c+1)])
 
-        return XMoves  
-
-    
+        return XMoves 
