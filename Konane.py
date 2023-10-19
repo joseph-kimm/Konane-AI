@@ -1,3 +1,4 @@
+import time
 from Board import Board
 
 count = 0
@@ -11,7 +12,7 @@ while True:
     # computer's turn
     if count%2 == 0:
 
-        print("\nComputer's Turn\n")
+        print("\nComputer's Turn: ", end = " ")
         moves = game.listXMoves()
 
         # check if game is over
@@ -19,6 +20,8 @@ while True:
             print("Player Won")
             exit()
         
+        # pause, then make move
+        time.sleep(1)
         game.randomMove(moves)
     
     # player's turn
@@ -29,6 +32,7 @@ while True:
         # check if game is over
         if len(moves) == 0:
             print("Computer Won")
+            exit()
 
         # print all the available moves
         print("Available moves:")
@@ -37,11 +41,12 @@ while True:
 
         move = int(input("Enter the number of the move that you want to make: ")) -1
 
-        print(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
+        # print(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
 
         game.move(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
-    
+    time.sleep(1)
     game.print()
+    time.sleep(1)
     count += 1
 
 

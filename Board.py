@@ -28,6 +28,8 @@ class Board:
 
     # Move a piece from start position (r1, c1) to end position at (r2, c2)
     def move(self, r1, c1, r2, c2):
+        print("Move (" + str(r1) + "," + str(c1) + ") to (" + str(r2) + "," + str(c2) + ").")
+        print()
         # determine if moving X or O
         player = self.pieces[r1-1][c1-1]
         
@@ -36,16 +38,14 @@ class Board:
         # Remove piece between start and end. Put player's piece at end position.
         if (r1-r2 == -2):
             self.remove(r1+1, c1)
-            self.pieces[r2-1][c2-1] = player
         if (r1-r2 == 2):
             self.remove(r2+1, c1)
-            self.pieces[r2-1][c2-1] = player
         if (c1-c2 == -2):
             self.remove(r1, c1+1)
-            self.pieces[r2-1][c2-1] = player
         if (c1-c2 == 2):
             self.remove(r1, c2+1)
-            self.pieces[r2-1][c2-1] = player
+        self.pieces[r2-1][c2-1] = player
+        self.empty.remove((r2-1, c2-1))
 
     # Pick a random move from the provided list
     def randomMove(self, list):
