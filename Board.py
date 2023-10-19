@@ -29,7 +29,7 @@ class Board:
     # Move a piece from start position (r1, c1) to end position at (r2, c2)
     def move(self, r1, c1, r2, c2):
         # determine if moving X or O
-        player = self.pieces[r1][c1]
+        player = self.pieces[r1-1][c1-1]
         
         self.remove(r1, c1)
 
