@@ -30,9 +30,10 @@ class Board:
 
     # Move a piece from start position (r1, c1) to end position at (r2, c2)
     def move(self, r1, c1, r2, c2):
+
         print("Move (" + str(r1) + "," + str(c1) + ") to (" + str(r2) + "," + str(c2) + ").")
         print()
-
+        
         # determine if moving X or O
         player = self.pieces[r1-1][c1-1]
         
@@ -43,60 +44,43 @@ class Board:
         self.pieces[r2-1][c2-1] = player
         self.empty.remove((r2-1, c2-1))
 
-        # Remove piece between start and end. Put player's piece at end position.
+        #going down
+        if (r1-r2 < 0):
 
-        #going right
-        if (r1-r2 == -2):
-            other = self.remove(r1+1, c1)
-
-            # there is another valid move to the right
-            if Board.isValid(r2+1, c1-1) and self.pieces[r2][c1-1] == other and self.pieces[r2+1][c1-1] == '.':
-                return [r2, c1, r2+2, c1]
-            else:
-                return None
+            other_r = r1+ 1
+            while other_r < r2:
+                self.remove(other_r, c1)
+                other_r += 2
             
-        # going left
-        if (r1-r2 == 2):
-            other = self.remove(r2+1, c1)
-
-            # there is another valid move to the left
-            if Board.isValid(r2-3, c1-1) and self.pieces[r2-2][c1-1] == other and self.pieces[r2-3][c1-1] == '.':
-                return [r2, c1, r2-2, c1]
-            
-            # there is no other valid move to the left
-            else:
-                return None
-
-        # going down
-        if (c1-c2 == -2):
-            other = self.remove(r1, c1+1)
-
-            # there is another valid moving down
-            if Board.isValid(r1-1, c2+1) and self.pieces[r1-1][c2] == other and self.pieces[r1-1][c2+1] == '.':
-                return [r1, c2, r1, c2+2]
-            
-            # there is no other valid moving down
-            else:
-                return None
-
         # going up
-        if (c1-c2 == 2):
-            other = self.remove(r1, c2+1)
+        if (r1-r2 > 0):
 
-            # there is another valid moving up
-            if Board.isValid(r1-1, c2-3) and self.pieces[r1-1][c2-2] == other and self.pieces[r1-1][c2-3] == '.':
-                return [r1, c2, r1, c2-2]
+            other_r = r1 - 1
+            while other_r > r2:
+                self.remove(other_r, c1)
+                other_r -= 2
+
+        # going right
+        if (c1-c2 < 0):
+
+            other_c = c1+1
+            while other_c < c2:
+                self.remove(r1, other_c)
+                other_c += 2
+
+        # going left
+        if (c1-c2 > 0):
             
-            # there is no other valid moving up
-            else:
-                return None
+            other_c = c1-1
+            while other_c > c2:
+                self.remove(r1, other_c)
+                other_c -= 2
+
         
     # Pick a random move from the provided list
     def randomMove(self, list):
             idx = random.randint(0, len(list)-1)
-            moves = self.move(list[idx][0][0], list[idx][0][1], list[idx][1][0], list[idx][1][1])
-            return moves
-        
+            self.move(list[idx][0][0], list[idx][0][1], list[idx][1][0], list[idx][1][1])
 
     # checking if row and column is valid
     @staticmethod
@@ -127,14 +111,61 @@ class Board:
                     #increment count wherever 'X' and 'O' in line
                     if (self.pieces[row1][col1] == 'X') and (self.pieces[row2][col2] == 'O'):
                         OMoves.append([(row2+1, col2+1), (r+1, c+1)])
+        
+        # since our moves start from an empty piece, we cannot search for additional moves there
+        # instead, we will consider all one jump moves and then see if there are additional moves to be made
+        for move in OMoves:
+            r1 = move[0][0]
+            c1 = move[0][1]
+
+            r2 = move[1][0]
+            c2 = move[1][1]
+
+            # move is to the right
+            if (r1-r2 == -2):
+
+                # finding all valid moves to the right
+                while Board.isValid(r2+1, c1-1) and self.pieces[r2][c1-1] == 'X' and self.pieces[r2+1][c1-1] == '.':
+                    OMoves.append([move[0], (r2+2, c1)])
+                    r1 += 2
+                    r2 += 2
+                
+            # move is to the left
+            elif (r1-r2 == 2):
+
+                # finding all valid moves to the left
+                while Board.isValid(r2-3, c1-1) and self.pieces[r2-2][c1-1] == 'X' and self.pieces[r2-3][c1-1] == '.':
+                    OMoves.append([move[0], (r2-2, c1)])
+                    r1 -= 2
+                    r2 -= 2
+                
+            # move is going down
+            elif (c1-c2 == -2):
+
+                # finding all valid moves going down
+                while Board.isValid(r1-1, c2+1) and self.pieces[r1-1][c2] == 'X' and self.pieces[r1-1][c2+1] == '.':
+                    OMoves.append([move[0], (r1, c2+2)])
+                    c1 += 2
+                    c2 += 2
+                
+
+            # move is going up
+            elif (c1-c2 == 2):
+
+                # finding all valid moves going up
+                if Board.isValid(r1-1, c2-3) and self.pieces[r1-1][c2-2] == 'X' and self.pieces[r1-1][c2-3] == '.':
+                    OMoves.append([move[0], (r1, c2-2)])
+                    c1 -= 2
+                    c2 -= 2
+
         return OMoves
 
     # returning list of possible moves for X
+    # also includes multiple moves
     def listXMoves(self):
         XMoves = []
         for (r, c) in self.empty:
             for i in range(4):
-                
                 # row and column for DIR1, aka one block away
                 row1 = r+self.DIR1[i][0]
                 col1 = c+self.DIR1[i][1]
@@ -149,5 +180,65 @@ class Board:
                     #increment count wherever 'X' and 'O' in line
                     if (self.pieces[row1][col1] == 'O') and (self.pieces[row2][col2] == 'X'):
                         XMoves.append([(row2+1, col2+1), (r+1, c+1)])
+            
+        # since our moves start from an empty piece, we cannot search for additional moves there
+        # instead, we will consider all one jump moves and then see if there are additional moves to be made
+        for move in XMoves:
+            r1 = move[0][0]
+            c1 = move[0][1]
 
-        return XMoves 
+            r2 = move[1][0]
+            c2 = move[1][1]
+
+            # move is down
+            if (r1-r2 == -2):
+
+                # finding all valid moves down
+                while Board.isValid(r2+1, c1-1) and self.pieces[r2][c1-1] == 'O' and self.pieces[r2+1][c1-1] == '.':
+                    XMoves.append([move[0], (r2+2, c1)])
+                    r1 += 2
+                    r2 += 2
+                
+            # move is up
+            elif (r1-r2 == 2):
+
+                # finding all valid moves up
+                while Board.isValid(r2-3, c1-1) and self.pieces[r2-2][c1-1] == 'O' and self.pieces[r2-3][c1-1] == '.':
+                    XMoves.append([move[0], (r2-2, c1)])
+                    r1 -= 2
+                    r2 -= 2
+                
+            # move is right
+            elif (c1-c2 == -2):
+
+                # finding all valid moves to the right
+                while Board.isValid(r1-1, c2+1) and self.pieces[r1-1][c2] == 'O' and self.pieces[r1-1][c2+1] == '.':
+                    XMoves.append([move[0], (r1, c2+2)])
+                    c1 += 2
+                    c2 += 2
+                
+
+            # move is left
+            elif (c1-c2 == 2):
+
+                # finding all valid moves to the left
+                if Board.isValid(r1-1, c2-3) and self.pieces[r1-1][c2-2] == 'O' and self.pieces[r1-1][c2-3] == '.':
+                    XMoves.append([move[0], (r1, c2-2)])
+                    c1 -= 2
+                    c2 -= 2
+        
+        return XMoves
+
+
+    
+    def staticEvaluation(self):
+        return
+
+
+    # the minimax function
+    @staticmethod
+    def minimax(board, depth):
+        if depth == 1:
+            return
+
+        return

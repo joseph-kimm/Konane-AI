@@ -2,7 +2,7 @@ import time
 import random
 from Board import Board
 
-random.seed(time.clock())
+random.seed(time.process_time())
 
 count = 0
 game = Board()
@@ -26,22 +26,8 @@ while True:
 
         # pause, then make move
         time.sleep(1)
-        next = game.randomMove(moves)
+        game.randomMove(moves)
 
-        time.sleep(1)
-        game.print()
-        time.sleep(1)
-
-        # checking if there are additional moves to be made
-        while next:
-            choice = random.randint(0,1)
-
-            if choice == 0:
-                next = move(next[0], next[1], next[2], next[3])
-                time.sleep(1)
-                print()
-                game.print()
-                time.sleep(1)
     
     # player's turn
     else:
@@ -61,22 +47,12 @@ while True:
 
         move = int(input("Enter the number of the move that you want to make: ")) -1
 
-        next = game.move(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
+        game.move(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
+        
 
-        time.sleep(1)
-        game.print()
-        time.sleep(1)
-
-        # checking if there are additional moves to be made
-        while next:
-            play = input(f"Do you want to make another move from {(next[0], next[1])} to {(next[2], next[3])}? (y/n): ")
-            if play == 'y':
-                next = game.move(next[0], next[1], next[2], next[3])
-                time.sleep(1)
-                print()
-                game.print()
-                time.sleep(1)
-
+    time.sleep(1)
+    game.print()
+    time.sleep(1)
     count += 1
 
 
