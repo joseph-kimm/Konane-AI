@@ -252,16 +252,17 @@ class Board:
             moves = board.listXMoves()
 
             cbv = - sys.maxsize
+            bestMove = ""
 
-            for move in moves:
+            for curMove in moves:
                 next_board = copy.deepcopy(board)
-                next_board.move(move[0][0], move[0][1], move[1][0], move[1][1])
+                next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
 
                 bv, move = Board.minimax(next_board, depth - 1)
 
                 if bv > cbv:
                     cbv = bv
-                    bestMove = move
+                    bestMove = next_board
 
             return (cbv, bestMove)
 
@@ -269,18 +270,20 @@ class Board:
         else:
             moves = board.listOMoves()
             cbv = sys.maxsize
-
-            for move in moves:
+            bestMove = ""
+            
+            for curMove in moves:
                 next_board = copy.deepcopy(board)
-                next_board.move(move[0][0], move[0][1], move[1][0], move[1][1])
+                next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
   
                 bv, move = Board.minimax(next_board, depth -1)
                 if bv < cbv:
                     cbv = bv
-                    bestMove = move
+                    bestMove = next_board
 
             return (cbv, bestMove)
 
 
 
-
+# 1. how to find the move that computer made
+# 2. issue of having no moves in minimax

@@ -27,8 +27,7 @@ while True:
         # pause, then make move
         cbv, bestMove = Board.minimax(game, 4)
         print(cbv)
-        bestMove.print()
-
+        game = bestMove
     
     # player's turn
     else:
@@ -51,9 +50,9 @@ while True:
         game.move(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
         
 
-    time.sleep(1)
-    #game.print()
-    time.sleep(1)
+    #time.sleep(1)
+    game.print()
+    #time.sleep(1)
     count += 1
 
 
