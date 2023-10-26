@@ -1,4 +1,6 @@
 import random
+import sys 
+import copy
 
 class Board:
 
@@ -31,8 +33,9 @@ class Board:
     # Move a piece from start position (r1, c1) to end position at (r2, c2)
     def move(self, r1, c1, r2, c2):
 
-        print("Move (" + str(r1) + "," + str(c1) + ") to (" + str(r2) + "," + str(c2) + ").")
-        print()
+        #print("Move (" + str(r1) + "," + str(c1) + ") to (" + str(r2) + "," + str(c2) + ").")
+        
+        #print()
         
         # determine if moving X or O
         player = self.pieces[r1-1][c1-1]
@@ -232,13 +235,52 @@ class Board:
 
     
     def staticEvaluation(self):
-        return
-
+        return len(self.listXMoves()) - len(self.listOMoves())
 
     # the minimax function
+    # since the depth is in multiple of 2, even => computer (max), odd => user (min)
+    # 
     @staticmethod
     def minimax(board, depth):
-        if depth == 1:
-            return
 
-        return
+        # end, perform static evaluation
+        if depth == 1:
+            return (board.staticEvaluation(), board)
+
+        # max node 
+        if depth %2 == 0:
+            moves = board.listXMoves()
+
+            cbv = - sys.maxsize
+
+            for move in moves:
+                next_board = copy.deepcopy(board)
+                next_board.move(move[0][0], move[0][1], move[1][0], move[1][1])
+
+                bv, move = Board.minimax(next_board, depth - 1)
+
+                if bv > cbv:
+                    cbv = bv
+                    bestMove = move
+
+            return (cbv, bestMove)
+
+        # min node
+        else:
+            moves = board.listOMoves()
+            cbv = sys.maxsize
+
+            for move in moves:
+                next_board = copy.deepcopy(board)
+                next_board.move(move[0][0], move[0][1], move[1][0], move[1][1])
+  
+                bv, move = Board.minimax(next_board, depth -1)
+                if bv < cbv:
+                    cbv = bv
+                    bestMove = move
+
+            return (cbv, bestMove)
+
+
+
+

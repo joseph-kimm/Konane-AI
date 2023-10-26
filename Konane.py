@@ -25,8 +25,9 @@ while True:
         print("\nComputer's Turn: ", end = " ")
 
         # pause, then make move
-        time.sleep(1)
-        game.randomMove(moves)
+        cbv, bestMove = Board.minimax(game, 4)
+        print(cbv)
+        bestMove.print()
 
     
     # player's turn
@@ -51,7 +52,7 @@ while True:
         
 
     time.sleep(1)
-    game.print()
+    #game.print()
     time.sleep(1)
     count += 1
 
