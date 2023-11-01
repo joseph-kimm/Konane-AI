@@ -25,9 +25,10 @@ while True:
         print("\nComputer's Turn: ", end = " ")
 
         # pause, then make move
-        cbv, bestMove = Board.minimax(game, 4)
+        cbv, bestBoard, chosen = Board.minimax(game, 4)
+        print("Move " + str(chosen[0]) + " to " + str(chosen[1]))
         print(cbv)
-        game = bestMove
+        game = bestBoard
     
     # player's turn
     else:

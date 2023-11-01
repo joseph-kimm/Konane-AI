@@ -242,10 +242,11 @@ class Board:
     # 
     @staticmethod
     def minimax(board, depth):
+        chosen = ""
 
         # end, perform static evaluation
         if depth == 1:
-            return (board.staticEvaluation(), board)
+            return (board.staticEvaluation(), board, "")
 
         # max node 
         if depth %2 == 0:
@@ -258,13 +259,14 @@ class Board:
                 next_board = copy.deepcopy(board)
                 next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
 
-                bv, move = Board.minimax(next_board, depth - 1)
+                bv, player, move = Board.minimax(next_board, depth - 1)
 
                 if bv > cbv:
                     cbv = bv
                     bestMove = next_board
+                    chosen = curMove
 
-            return (cbv, bestMove)
+            return (cbv, bestMove, chosen)
 
         # min node
         else:
@@ -276,12 +278,13 @@ class Board:
                 next_board = copy.deepcopy(board)
                 next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
   
-                bv, move = Board.minimax(next_board, depth -1)
+                bv, player, move = Board.minimax(next_board, depth -1)
                 if bv < cbv:
                     cbv = bv
                     bestMove = next_board
+                    chosen = curMove
 
-            return (cbv, bestMove)
+            return (cbv, bestMove, chosen)
 
 
 
