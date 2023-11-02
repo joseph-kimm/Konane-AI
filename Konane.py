@@ -6,11 +6,13 @@ import sys
 
 random.seed(time.process_time())
 
-choice = input("Does computer want to be first? (y/n): ")
-if choice == 'y':
-    count = 0
-else:
+count = 0
+user = input("Do you want to play X or O? X goes first. (X/O): ")
+if user == 'X':
+    computer = 'O'
     count = 1
+elif user == 'O':
+    computer = 'X'
 
 game = Board()
 game.remove(4,4)
@@ -24,7 +26,7 @@ while True:
     # computer's turn
     if count%2 == 0:
 
-        moves = game.listXMoves()
+        moves = game.listMoves(computer)
 
         # check if game is over
         if len(moves) == 0:
@@ -53,7 +55,7 @@ while True:
     
     # player's turn
     else:
-        moves = game.listOMoves()
+        moves = game.listMoves(user)
 
         # check if game is over
         if len(moves) == 0:

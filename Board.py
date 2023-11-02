@@ -165,8 +165,13 @@ class Board:
 
     # returning list of possible moves for X
     # also includes multiple moves
-    def listXMoves(self):
-        XMoves = []
+    def listMoves(self, side):
+        player = side
+        if player == 'X': 
+            opponent = 'O'
+        elif player == 'O':
+            opponent = 'X'
+        Moves = []
         for (r, c) in self.empty:
             for i in range(4):
                 # row and column for DIR1, aka one block away
@@ -181,12 +186,12 @@ class Board:
                 if Board.isValid(row2, col2):
                     
                     #increment count wherever 'X' and 'O' in line
-                    if (self.pieces[row1][col1] == 'O') and (self.pieces[row2][col2] == 'X'):
-                        XMoves.append([(row2+1, col2+1), (r+1, c+1)])
+                    if (self.pieces[row1][col1] == opponent) and (self.pieces[row2][col2] == player):
+                        Moves.append([(row2+1, col2+1), (r+1, c+1)])
             
         # since our moves start from an empty piece, we cannot search for additional moves there
         # instead, we will consider all one jump moves and then see if there are additional moves to be made
-        for move in XMoves:
+        for move in Moves:
             r1 = move[0][0]
             c1 = move[0][1]
 
@@ -197,8 +202,8 @@ class Board:
             if (r1-r2 == -2):
 
                 # finding all valid moves down
-                while Board.isValid(r2+1, c1-1) and self.pieces[r2][c1-1] == 'O' and self.pieces[r2+1][c1-1] == '.':
-                    XMoves.append([move[0], (r2+2, c1)])
+                while Board.isValid(r2+1, c1-1) and self.pieces[r2][c1-1] == opponent and self.pieces[r2+1][c1-1] == '.':
+                    Moves.append([move[0], (r2+2, c1)])
                     r1 += 2
                     r2 += 2
                 
@@ -206,8 +211,8 @@ class Board:
             elif (r1-r2 == 2):
 
                 # finding all valid moves up
-                while Board.isValid(r2-3, c1-1) and self.pieces[r2-2][c1-1] == 'O' and self.pieces[r2-3][c1-1] == '.':
-                    XMoves.append([move[0], (r2-2, c1)])
+                while Board.isValid(r2-3, c1-1) and self.pieces[r2-2][c1-1] == opponent and self.pieces[r2-3][c1-1] == '.':
+                    Moves.append([move[0], (r2-2, c1)])
                     r1 -= 2
                     r2 -= 2
                 
@@ -215,8 +220,8 @@ class Board:
             elif (c1-c2 == -2):
 
                 # finding all valid moves to the right
-                while Board.isValid(r1-1, c2+1) and self.pieces[r1-1][c2] == 'O' and self.pieces[r1-1][c2+1] == '.':
-                    XMoves.append([move[0], (r1, c2+2)])
+                while Board.isValid(r1-1, c2+1) and self.pieces[r1-1][c2] == opponent and self.pieces[r1-1][c2+1] == '.':
+                    Moves.append([move[0], (r1, c2+2)])
                     c1 += 2
                     c2 += 2
                 
@@ -225,17 +230,17 @@ class Board:
             elif (c1-c2 == 2):
 
                 # finding all valid moves to the left
-                if Board.isValid(r1-1, c2-3) and self.pieces[r1-1][c2-2] == 'O' and self.pieces[r1-1][c2-3] == '.':
-                    XMoves.append([move[0], (r1, c2-2)])
+                if Board.isValid(r1-1, c2-3) and self.pieces[r1-1][c2-2] == opponent and self.pieces[r1-1][c2-3] == '.':
+                    Moves.append([move[0], (r1, c2-2)])
                     c1 -= 2
                     c2 -= 2
         
-        return XMoves
+        return Moves
 
 
     
     def staticEvaluation(self):
-        return len(self.listXMoves()) - len(self.listOMoves())
+        return len(self.listMoves('X')) - len(self.listMoves('O'))
 
     # the minimax function
     # since the depth is in multiple of 2, even => computer (max), odd => user (min)
@@ -249,7 +254,7 @@ class Board:
 
         # max node 
         if depth %2 == 0:
-            moves = board.listXMoves()
+            moves = board.listMoves('X')
 
             for curMove in moves:
                 next_board = copy.deepcopy(board)
@@ -267,7 +272,7 @@ class Board:
 
         # min node
         else:
-            moves = board.listOMoves()
+            moves = board.listMoves('O')
             
             for curMove in moves:
                 next_board = copy.deepcopy(board)
