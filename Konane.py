@@ -1,14 +1,23 @@
 import time
 import random
 from Board import Board
+import copy
+import sys 
 
 random.seed(time.process_time())
 
-count = 0
+choice = input("Does computer want to be first? (y/n): ")
+if choice == 'y':
+    count = 0
+else:
+    count = 1
+
 game = Board()
 game.remove(4,4)
 game.remove(4,5)
 game.print()
+
+
 
 while True:
     
@@ -24,11 +33,23 @@ while True:
         
         print("\nComputer's Turn: ", end = " ")
 
-        # pause, then make move
-        cbv, bestBoard, chosen = Board.minimax(game, 4)
-        print("Move " + str(chosen[0]) + " to " + str(chosen[1]))
-        print(cbv)
-        game = bestBoard
+
+        bestVal = - sys.maxsize
+
+        for move in moves:
+            alpha = -sys.maxsize
+            beta = sys.maxsize
+            temp = copy.deepcopy(game)
+            temp.move(move[0][0], move[0][1], move[1][0], move[1][1])
+            cbv = Board.minimax(temp, 5, alpha, beta)
+
+            if cbv > bestVal:
+                bestVal = cbv
+                bestMove = move
+
+        print("Move " + str(bestMove[0]) + " to " + str(bestMove[1]))
+        print(bestVal)
+        game.move(bestMove[0][0], bestMove[0][1], bestMove[1][0], bestMove[1][1])
     
     # player's turn
     else:
@@ -51,9 +72,7 @@ while True:
         game.move(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
         
 
-    #time.sleep(1)
     game.print()
-    #time.sleep(1)
     count += 1
 
 
