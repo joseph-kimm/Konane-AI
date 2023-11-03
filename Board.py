@@ -93,83 +93,14 @@ class Board:
         else:
             return False
         
-    # returning list of possible moves for O
-    def listOMoves(self):
-        OMoves = []
-        # find a '.' step
-        for (r, c) in self.empty:
-            for i in range(4):
 
-                # row and column for DIR1, aka one block away
-                row1 = r+self.DIR1[i][0]
-                col1 = c+self.DIR1[i][1]
-
-                # row and column for DIR2, aka two blocks away
-                row2 = r+self.DIR2[i][0]
-                col2 = c+self.DIR2[i][1]
-
-                # checking if farther one is valdi
-                if Board.isValid(row2, col2):
-
-                    #increment count wherever 'X' and 'O' in line
-                    if (self.pieces[row1][col1] == 'X') and (self.pieces[row2][col2] == 'O'):
-                        OMoves.append([(row2+1, col2+1), (r+1, c+1)])
-        
-        # since our moves start from an empty piece, we cannot search for additional moves there
-        # instead, we will consider all one jump moves and then see if there are additional moves to be made
-        for move in OMoves:
-            r1 = move[0][0]
-            c1 = move[0][1]
-
-            r2 = move[1][0]
-            c2 = move[1][1]
-
-            # move is to the right
-            if (r1-r2 == -2):
-
-                # finding all valid moves to the right
-                while Board.isValid(r2+1, c1-1) and self.pieces[r2][c1-1] == 'X' and self.pieces[r2+1][c1-1] == '.':
-                    OMoves.append([move[0], (r2+2, c1)])
-                    r1 += 2
-                    r2 += 2
-                
-            # move is to the left
-            elif (r1-r2 == 2):
-
-                # finding all valid moves to the left
-                while Board.isValid(r2-3, c1-1) and self.pieces[r2-2][c1-1] == 'X' and self.pieces[r2-3][c1-1] == '.':
-                    OMoves.append([move[0], (r2-2, c1)])
-                    r1 -= 2
-                    r2 -= 2
-                
-            # move is going down
-            elif (c1-c2 == -2):
-
-                # finding all valid moves going down
-                while Board.isValid(r1-1, c2+1) and self.pieces[r1-1][c2] == 'X' and self.pieces[r1-1][c2+1] == '.':
-                    OMoves.append([move[0], (r1, c2+2)])
-                    c1 += 2
-                    c2 += 2
-                
-
-            # move is going up
-            elif (c1-c2 == 2):
-
-                # finding all valid moves going up
-                if Board.isValid(r1-1, c2-3) and self.pieces[r1-1][c2-2] == 'X' and self.pieces[r1-1][c2-3] == '.':
-                    OMoves.append([move[0], (r1, c2-2)])
-                    c1 -= 2
-                    c2 -= 2
-
-        return OMoves
-
-    # returning list of possible moves for X
-    # also includes multiple moves
+    # returning list of possible moves for side
+    # also includes double jumps
     def listMoves(self, side):
         player = side
         if player == 'X': 
             opponent = 'O'
-        elif player == 'O':
+        else:
             opponent = 'X'
         Moves = []
         for (r, c) in self.empty:
@@ -246,7 +177,11 @@ class Board:
     # since the depth is in multiple of 2, even => computer (max), odd => user (min)
     # 
     @staticmethod
-    def minimax(board, depth, alpha, beta):
+    def minimax(board, player, depth, alpha, beta):
+        if player == 'X':
+            opponent = 'O'
+        else:
+            opponent = 'X'
 
         # end, perform static evaluation
         if depth == 1:
@@ -254,13 +189,13 @@ class Board:
 
         # max node 
         if depth %2 == 0:
-            moves = board.listMoves('X')
+            moves = board.listMoves(player)
 
             for curMove in moves:
                 next_board = copy.deepcopy(board)
                 next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
 
-                bv = Board.minimax(next_board, depth - 1, alpha, beta)
+                bv = Board.minimax(next_board, opponent, depth - 1, alpha, beta)
 
                 if bv > alpha:
                     alpha = bv
@@ -272,13 +207,13 @@ class Board:
 
         # min node
         else:
-            moves = board.listMoves('O')
+            moves = board.listMoves(opponent)
             
             for curMove in moves:
                 next_board = copy.deepcopy(board)
                 next_board.move(curMove[0][0], curMove[0][1], curMove[1][0], curMove[1][1])
   
-                bv = Board.minimax(next_board, depth -1, alpha, beta)
+                bv = Board.minimax(next_board, player, depth - 1, alpha, beta)
                 if bv < beta:
                     beta = bv
 
@@ -286,7 +221,3 @@ class Board:
                     return alpha
             
             return beta
-
-
-# 1. how to find the move that computer made
-# 2. issue of having no moves in minimax
