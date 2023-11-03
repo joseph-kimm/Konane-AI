@@ -43,7 +43,7 @@ while True:
             beta = sys.maxsize
             temp = copy.deepcopy(game)
             temp.move(move[0][0], move[0][1], move[1][0], move[1][1])
-            cbv = Board.minimax(temp, computer, 5, alpha, beta)
+            cbv = Board.minimax(temp, computer, 3, alpha, beta)
 
             if cbv > bestVal:
                 bestVal = cbv
