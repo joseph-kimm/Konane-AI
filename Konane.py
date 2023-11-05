@@ -19,14 +19,13 @@ game.remove(4,4)
 game.remove(4,5)
 game.print()
 
-
-
 while True:
     
     # computer's turn
     if count%2 == 0:
 
         moves = game.listMoves(computer)
+        print(moves)
 
         # check if game is over
         if len(moves) == 0:
@@ -39,18 +38,18 @@ while True:
         bestVal = - sys.maxsize
 
         for move in moves:
-            alpha = -sys.maxsize
-            beta = sys.maxsize
+            alpha = -1000
+            beta = 1000
             temp = copy.deepcopy(game)
             temp.move(move[0][0], move[0][1], move[1][0], move[1][1])
-            cbv = Board.minimax(temp, computer, 3, alpha, beta)
 
+            cbv = Board.minimax(temp, computer, 5, alpha, beta)
+        
             if cbv > bestVal:
                 bestVal = cbv
                 bestMove = move
 
         print("Move " + str(bestMove[0]) + " to " + str(bestMove[1]))
-        print(bestVal)
         game.move(bestMove[0][0], bestMove[0][1], bestMove[1][0], bestMove[1][1])
     
     # player's turn

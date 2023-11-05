@@ -170,12 +170,16 @@ class Board:
 
 
     
-    def staticEvaluation(self):
-        return len(self.listMoves('X')) - len(self.listMoves('O'))
+    def staticEvaluation(self, player):
+        if player == 'X':
+            opponent = 'O'
+        else:
+            opponent = 'X'
+            
+        return len(self.listMoves(player)) - len(self.listMoves(opponent))
 
     # the minimax function
     # since the depth is in multiple of 2, even => computer (max), odd => user (min)
-    # 
     @staticmethod
     def minimax(board, player, depth, alpha, beta):
         if player == 'X':
@@ -185,7 +189,7 @@ class Board:
 
         # end, perform static evaluation
         if depth == 1:
-            return (board.staticEvaluation())
+            return (board.staticEvaluation(player))
 
         # max node 
         if depth %2 == 0:
