@@ -25,7 +25,7 @@ while True:
     if count%2 == 0:
 
         moves = game.listMoves(computer)
-        print(moves)
+        #print(moves)
 
         # check if game is over
         if len(moves) == 0:
@@ -68,7 +68,7 @@ while True:
         for i in range(len(moves)):
             print(str(i+1) + ") Move " + str(moves[i][0]) + " to " + str(moves[i][1]))
 
-        move = int(input("Enter the number of the move that you want to make: ")) -1
+        move = int(input("\nEnter the number of the move that you want to make: ")) -1
 
         game.move(moves[move][0][0], moves[move][0][1], moves[move][1][0], moves[move][1][1])
         
